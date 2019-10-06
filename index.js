@@ -2,8 +2,6 @@
 require("dotenv").config();
 
 const Telegraf = require("telegraf");
-const Telegram = require("telegraf/telegram");
-const extra = require("telegraf/extra");
 
 const replies = [
   "WAS, EIN BRUDIMOMENT?",
@@ -39,14 +37,51 @@ const replies = [
   "ENTSCHULDIGUNG, HABEN SIE EINEN BRUDIMOMENT ZEIT?",
   "ZEUGEN BERICHTETEN VON EINEM BRUDIMOMENT",
   "DIAGNOSE: BRUDIMOMENT.",
-  "BRUDIMOMENT.\nBRUDI. MOMENT."
+  "BRUDIMOMENT.\nBRUDI. MOMENT.",
+  "HEFTIGER BRUDIMOMENT",
+  "🚨 BRUDIMOMENTALARM 🚨",
+  "WAS EIN BRUDIMOMENT HAHA 😂👌",
+  "DIESER MOMENT WENN BRUDIMOMENT",
+  "ES BESTEHT GEFAHR VOR EINEM BRUDIMOMENT",
+  "DAS IST EIN NOTFALL! ES GAB EINEN BRUDIMOMENT.",
+  "stiller brudimoment.",
+  "DIESER BRUDIMOMENT IST ANDERS ALS ANDERE",
+  "DER BRUDIMOMENTPEGEL SCHLÄGT AUS",
+  "FÜLLEN SIE BITTE DAS ANTRAGSFORMULAR ZUR BRUDIMOMENTMELDUNG AUS DANKE",
+  "IST ES ETWA SCHON WIEDER ZEIT FÜR EINEN BRUDIMOMENT??"
 ];
 
 const bot = new Telegraf(process.env.BOT_TOKEN);
-const telegram = new Telegram(process.env.BOT_TOKEN);
+
 bot.start(ctx => ctx.reply("Bruder muss los."));
-bot.command("brudimoment", ctx => {
-  ctx.reply(replies[Math.floor(Math.random() * replies.length)]);
-});
+
+bot
+  .command("brudimoment", ctx => {
+    let replyTo = ctx.message.reply_to_message;
+
+    let reply = replies[Math.floor(Math.random() * replies.length)];
+
+    let options = replyTo ? { reply_to_message_id: replyTo.message_id } : {};
+
+    if (Math.random() < 0.1) {
+      ctx.replyWithAudio("https://www.myinstants.com/media/sounds/movie_1.mp3");
+      reply = "EIN SELTENER BRUDIMOMENT 😱😱";
+    }
+
+    ctx.reply(reply, options);
+
+    if (replyTo) {
+      ctx.deleteMessage(ctx.message_id).catch(e => {
+        // was willste machen ¯\_(ツ)_/¯
+        ctx.reply("(brudi brauch löschrechte)");
+        console.log(e);
+      });
+    }
+  })
+  .catch(e => {
+    console.log(e);
+  });
+
 console.log("Bruder muss los...");
+
 bot.launch();
